@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="styles/default">../resources/styles/style.css</file>
+        <file alias="icons/add">../resources/icons/add2.png</file>
+        <file alias="icons/app">../resources/icons/alpha.png</file>
+        <file alias="icons/close">../resources/icons/close2.png</file>
+        <file alias="icons/settings">../resources/icons/cogs2.png</file>
+        <file alias="icons/move">../resources/icons/move-93.png</file>
+    </qresource>
+</RCC>
