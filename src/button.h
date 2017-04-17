@@ -2,12 +2,13 @@
 #define BUTTON_H
 
 #include <QObject>
-#include <QPushButton>
+#include <QAction>
 #include <QGuiApplication>
 #include <QClipboard>
 
-class Button : public QPushButton
+class Button : public QAction
 {
+    Q_OBJECT
 public:
     explicit Button(QWidget *parent = 0);
     /**
@@ -15,6 +16,15 @@ public:
      * @param data  The text data to be stored
      */
     void setData(QString data);
+
+signals:
+
+    /**
+     * @brief Emitted when a button is pressed
+     * used in MainWindow to pause the stack update
+     * @param The duration of the pause in milliseconds
+     */
+    void pauseUpdateStack(int);
 
 public slots:
     /**

@@ -276,6 +276,10 @@ QToolButton:checked:hover, QToolBar QPushButton:checked:hover {
 	color: #6d6d6d;
 }
 
+QToolBarExtension {
+    background-color: #434343;
+}
+
 /* SCROLL AREA */
 QScrollArea QWidget {
 	background-color: #434343;
@@ -402,7 +406,8 @@ QTableWidget QComboBox QAbstractItemView {
 /* LIST */
 
 QListWidget {
-	background-color: #6d6d6d;
+	background-color: #434343;
+	alternate-background-color: #494949;
 	color: #e3e3e3;
 	padding: 3px;
 	border: 2px solid #6d6d6d;

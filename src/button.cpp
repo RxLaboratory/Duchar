@@ -2,11 +2,9 @@
 #include <QtDebug>
 
 Button::Button(QWidget *parent) :
-    QPushButton(parent)
+    QAction(parent)
 {
-    this->setMaximumSize(30,30);
-    this->setMinimumSize(30,30);
-    connect(this, &QPushButton::clicked,this, &Button::copyData);
+    connect(this, &QAction::triggered,this, &Button::copyData);
 }
 
 void Button::setData(QString data)
@@ -17,5 +15,6 @@ void Button::setData(QString data)
 void Button::copyData(bool c)
 {
     QClipboard *clipboard = QGuiApplication::clipboard();
+    emit pauseUpdateStack(10);
     clipboard->setText(textData);
 }

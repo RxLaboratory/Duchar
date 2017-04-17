@@ -6,6 +6,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     setupUi(this);
 
+    updateStack = false;
+
     //appearance
     this->setWindowFlags(this->windowFlags() | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::SubWindow);//subwindow removes the task bar item
     QFile cssFile(":/styles/default");
@@ -29,6 +31,15 @@ MainWindow::MainWindow(QWidget *parent) :
         trayIcon->show();
     }
 
+    //toolBar
+    toolBar->addAction(actionManage_buttons);
+    toolBar->addAction(actionSettings);
+    toolBar->addAction(actionShow_Hide);
+    toolBar->addAction(actionQuit);
+    QWidget *spacer = new QWidget(toolBar);
+    spacer->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+    actionSpacer = toolBar->insertWidget(actionManage_buttons,spacer);
+
     //add buttons
     addButton("É","É");
     addButton("È","È");
@@ -36,21 +47,57 @@ MainWindow::MainWindow(QWidget *parent) :
     addButton("À","À");
 
     //drag window
-    mover->installEventFilter(this);
+    toolBar->installEventFilter(this);
+
+    //clipboard
+    clipboard = QGuiApplication::clipboard();
+
+    timer = new QTimer(this);
+    timer->setSingleShot(true);
 
     //connections
     mapEvents();
+
+    updateStack = true;
 }
 
 void MainWindow::mapEvents()
 {
-    //window buttons
-    connect(btn_quit,SIGNAL(clicked()),qApp,SLOT(quit()));
+    //clipboard
+    connect(clipboard,SIGNAL(dataChanged()),this,SLOT(clipboardChanged()));
 
     //tray icon
     connect(trayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(trayIconClicked(QSystemTrayIcon::ActivationReason)));
     connect(actionShow_Hide,SIGNAL(triggered()),this,SLOT(showHide()));
     connect(actionQuit,SIGNAL(triggered()),qApp,SLOT(quit()));
+
+    //timer
+    connect(timer,SIGNAL(timeout()),this,SLOT(resumeUpdateStack()));
+}
+
+void MainWindow::clipboardChanged()
+{
+    if (!updateStack) return;
+
+    if (clipboard->text() == "") return;
+    if (stack->count() > 0)
+    {
+        if (clipboard->text() == stack->item(0)->data(Qt::UserRole).toString()) return;
+    }
+
+
+    QString clipboardText = clipboard->text();
+
+    if (clipboardText.length() > 33)
+    {
+        qDebug() << "raccourci";
+        clipboardText = clipboardText.left(30) + "...";
+    }
+
+    QListWidgetItem *item = new QListWidgetItem(clipboardText);
+    item->setData(Qt::UserRole,clipboard->text());
+    item->setToolTip(clipboard->text());
+    stack->insertItem(0,item);
 }
 
 void MainWindow::addButton(QString label,QString data)
@@ -58,7 +105,9 @@ void MainWindow::addButton(QString label,QString data)
     Button *btn = new Button(this);
     btn->setText(label);
     btn->setData(data);
-    mainLayout->insertWidget(1,btn);
+    toolBar->insertAction(actionSpacer,btn);
+
+    connect(btn,SIGNAL(pauseUpdateStack(int)),this,SLOT(pauseUpdateStack(int)));
 }
 
 void MainWindow::trayIconClicked(QSystemTrayIcon::ActivationReason reason)
@@ -83,6 +132,24 @@ void MainWindow::showHide()
         actionShow_Hide->setIcon(QIcon(":/icons/hide"));
         actionShow_Hide->setText("Hide application");
     }
+}
+
+void MainWindow::pauseUpdateStack(int duration)
+{
+    timer->setInterval(duration);
+    updateStack = false;
+    timer->start();
+}
+
+void MainWindow::resumeUpdateStack()
+{
+    updateStack = true;
+}
+
+void MainWindow::on_stack_itemClicked(QListWidgetItem *item)
+{
+    pauseUpdateStack();
+    clipboard->setText(item->data(Qt::UserRole).toString());
 }
 
 //EVENT FILTER
@@ -122,4 +189,6 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
       return QObject::eventFilter(obj, event);
   }
 }
+
+
 
