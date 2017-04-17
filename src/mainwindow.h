@@ -102,6 +102,11 @@ private:
      */
     QTimer *timer;
 
+    /**
+     * @brief trayMenu
+     */
+    QMenu *trayMenu;
+
 protected:
 
     // Reimplemented methods

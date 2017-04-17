@@ -17,10 +17,10 @@ MainWindow::MainWindow(QWidget *parent) :
     qApp->setStyleSheet(css);
 
     //system tray
+    trayMenu = new QMenu("Duchar",this);
     if (QSystemTrayIcon::isSystemTrayAvailable())
     {
         trayIcon = new QSystemTrayIcon(QIcon(":/icons/app"),this);
-        QMenu *trayMenu = new QMenu("Duchar",this);
         trayMenu->addAction(actionManage_buttons);
         trayMenu->addAction(actionSettings);
         trayMenu->addAction(actionShow_Hide);
@@ -106,6 +106,8 @@ void MainWindow::addButton(QString label,QString data)
     btn->setText(label);
     btn->setData(data);
     toolBar->insertAction(actionSpacer,btn);
+
+    trayMenu->insertAction(actionManage_buttons,btn);
 
     connect(btn,SIGNAL(pauseUpdateStack(int)),this,SLOT(pauseUpdateStack(int)));
 }
