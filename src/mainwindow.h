@@ -4,6 +4,8 @@
 #include "ui_mainwindow.h"
 #include <QFile>
 #include <QMouseEvent>
+#include <QSystemTrayIcon>
+#include <QMenu>
 #include "button.h"
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
@@ -12,6 +14,18 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
+
+private slots:
+    /**
+     * @brief Handles events from tray icon
+     * @param reason    The reason why the icon was activated
+     */
+    void trayIconClicked(QSystemTrayIcon::ActivationReason reason);
+
+    /**
+     * @brief Show or hides the application
+     */
+    void showHide();
 
 private:
 
@@ -37,6 +51,11 @@ private:
      * Used for dragging window
      */
     QPoint dragPosition;
+
+    /**
+     * @brief Icon in the system tray
+     */
+    QSystemTrayIcon *trayIcon;
 
 protected:
 

@@ -7,13 +7,27 @@ MainWindow::MainWindow(QWidget *parent) :
     setupUi(this);
 
     //appearance
-    this->setWindowFlags(this->windowFlags() | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    this->setWindowFlags(this->windowFlags() | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::SubWindow);//subwindow removes the task bar item
     QFile cssFile(":/styles/default");
-    qDebug() << cssFile.exists();
     cssFile.open(QFile::ReadOnly);
     QString css = cssFile.readAll();
     cssFile.close();
     qApp->setStyleSheet(css);
+
+    //system tray
+    if (QSystemTrayIcon::isSystemTrayAvailable())
+    {
+        trayIcon = new QSystemTrayIcon(QIcon(":/icons/app"),this);
+        QMenu *trayMenu = new QMenu("Duchar",this);
+        trayMenu->addAction(actionManage_buttons);
+        trayMenu->addAction(actionSettings);
+        trayMenu->addAction(actionShow_Hide);
+        trayMenu->addAction(actionQuit);
+        actionSettings->setEnabled(false);
+        actionManage_buttons->setEnabled(false);
+        trayIcon->setContextMenu(trayMenu);
+        trayIcon->show();
+    }
 
     //add buttons
     addButton("É","É");
@@ -32,6 +46,11 @@ void MainWindow::mapEvents()
 {
     //window buttons
     connect(btn_quit,SIGNAL(clicked()),qApp,SLOT(quit()));
+
+    //tray icon
+    connect(trayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(trayIconClicked(QSystemTrayIcon::ActivationReason)));
+    connect(actionShow_Hide,SIGNAL(triggered()),this,SLOT(showHide()));
+    connect(actionQuit,SIGNAL(triggered()),qApp,SLOT(quit()));
 }
 
 void MainWindow::addButton(QString label,QString data)
@@ -40,6 +59,30 @@ void MainWindow::addButton(QString label,QString data)
     btn->setText(label);
     btn->setData(data);
     mainLayout->insertWidget(1,btn);
+}
+
+void MainWindow::trayIconClicked(QSystemTrayIcon::ActivationReason reason)
+{
+    if (reason == QSystemTrayIcon::Trigger)
+    {
+        showHide();
+    }
+}
+
+void MainWindow::showHide()
+{
+    if (this->isVisible())
+    {
+        this->hide();
+        actionShow_Hide->setIcon(QIcon(":/icons/show"));
+        actionShow_Hide->setText("Show application");
+    }
+    else
+    {
+        this->show();
+        actionShow_Hide->setIcon(QIcon(":/icons/hide"));
+        actionShow_Hide->setText("Hide application");
+    }
 }
 
 //EVENT FILTER

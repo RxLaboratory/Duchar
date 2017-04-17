@@ -6,5 +6,7 @@
         <file alias="icons/close">../resources/icons/close2.png</file>
         <file alias="icons/settings">../resources/icons/cogs2.png</file>
         <file alias="icons/move">../resources/icons/move-93.png</file>
+        <file alias="icons/hide">../resources/icons/eye slash.png</file>
+        <file alias="icons/show">../resources/icons/eye.png</file>
     </qresource>
 </RCC>
