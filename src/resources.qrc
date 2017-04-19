@@ -8,5 +8,6 @@
         <file alias="icons/move">../resources/icons/move-93.png</file>
         <file alias="icons/hide">../resources/icons/eye slash.png</file>
         <file alias="icons/show">../resources/icons/eye.png</file>
+        <file alias="icons/trash">../resources/icons/trash2-91.png</file>
     </qresource>
 </RCC>

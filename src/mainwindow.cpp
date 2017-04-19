@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     if (QSystemTrayIcon::isSystemTrayAvailable())
     {
         trayIcon = new QSystemTrayIcon(QIcon(":/icons/app"),this);
+        trayMenu->addAction(actionClear);
         trayMenu->addAction(actionManage_buttons);
         trayMenu->addAction(actionSettings);
         trayMenu->addAction(actionShow_Hide);
@@ -32,13 +33,14 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     //toolBar
+    toolBar->addAction(actionClear);
     toolBar->addAction(actionManage_buttons);
     toolBar->addAction(actionSettings);
     toolBar->addAction(actionShow_Hide);
     toolBar->addAction(actionQuit);
     QWidget *spacer = new QWidget(toolBar);
     spacer->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
-    actionSpacer = toolBar->insertWidget(actionManage_buttons,spacer);
+    actionSpacer = toolBar->insertWidget(actionClear,spacer);
 
     //add buttons
     addButton("É","É");
@@ -70,6 +72,7 @@ void MainWindow::mapEvents()
     connect(trayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(trayIconClicked(QSystemTrayIcon::ActivationReason)));
     connect(actionShow_Hide,SIGNAL(triggered()),this,SLOT(showHide()));
     connect(actionQuit,SIGNAL(triggered()),qApp,SLOT(quit()));
+    connect(actionClear,SIGNAL(triggered()),stack,SLOT(clear()));
 
     //timer
     connect(timer,SIGNAL(timeout()),this,SLOT(resumeUpdateStack()));
@@ -107,7 +110,7 @@ void MainWindow::addButton(QString label,QString data)
     btn->setData(data);
     toolBar->insertAction(actionSpacer,btn);
 
-    trayMenu->insertAction(actionManage_buttons,btn);
+    trayMenu->insertAction(actionClear,btn);
 
     connect(btn,SIGNAL(pauseUpdateStack(int)),this,SLOT(pauseUpdateStack(int)));
 }
@@ -191,6 +194,3 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
       return QObject::eventFilter(obj, event);
   }
 }
-
-
-
