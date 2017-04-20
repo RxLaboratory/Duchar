@@ -48,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     addButton("Ù","Ù");
     addButton("À","À");
     addButton("Ç","Ç");
+    addButton("•","•");
 
     //drag window
     toolBar->installEventFilter(this);
