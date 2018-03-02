@@ -10,11 +10,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //appearance
     this->setWindowFlags(this->windowFlags() | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::SubWindow);//subwindow removes the task bar item
-    QFile cssFile(":/styles/default");
-    cssFile.open(QFile::ReadOnly);
-    QString css = cssFile.readAll();
-    cssFile.close();
-    qApp->setStyleSheet(css);
+    //set style
+    updateCSS(":/styles/default");
+    //remove right click on toolbar
+    toolBar->setContextMenuPolicy(Qt::PreventContextMenu);
 
     //system tray
     trayMenu = new QMenu("Duchar",this);
@@ -78,6 +77,24 @@ void MainWindow::mapEvents()
 
     //timer
     connect(timer,SIGNAL(timeout()),this,SLOT(resumeUpdateStack()));
+}
+
+void MainWindow::updateCSS(QString cssFileName)
+{
+    QStringList cssFiles(cssFileName);
+    //check if there's a duchar file to include
+    QFileInfo cssFileInfo(cssFileName);
+    QString includeName = cssFileInfo.completeBaseName() + "-duchar";
+    QString includePath = cssFileInfo.path() + "/" + includeName + ".css";
+    QFile includeFile(includePath);
+    includePath = cssFileInfo.path() + "/" + includeName;
+    if (!includeFile.exists()) includeFile.setFileName(includePath);
+    if (includeFile.exists())
+    {
+        cssFiles << includePath;
+    }
+    QString css = RainboxUI::loadCSS(cssFiles);
+    qApp->setStyleSheet(css);
 }
 
 void MainWindow::clipboardChanged()

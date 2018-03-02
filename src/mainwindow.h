@@ -7,7 +7,9 @@
 #include <QSystemTrayIcon>
 #include <QMenu>
 #include <QTimer>
+#include <QFileInfo>
 #include "button.h"
+#include "rainboxui.h"
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
@@ -29,6 +31,11 @@ public slots:
     void resumeUpdateStack();
 
 private slots:
+    /**
+     * @brief updates the style of the application
+     * @param cssFileName   The path to a css file to load
+     */
+    void updateCSS(QString cssFileName);
     /**
      * @brief Handles events from tray icon
      * @param reason    The reason why the icon was activated
