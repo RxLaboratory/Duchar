@@ -1,11 +1,14 @@
 #include "mainwindow.h"
 #include "frameless.h"
+#include "buttonmanager.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow *w = new MainWindow();
+    ButtonManager *buttonManager = new ButtonManager();
+    FrameLess ff(buttonManager);
+    MainWindow *w = new MainWindow(buttonManager);
     FrameLess f(w);
     w->show();
 

@@ -12,6 +12,7 @@
 #include <QtGui/QHoverEvent>
 #include <QtGui/QMouseEvent>
 #include <QMainWindow>
+#include <QDialog>
 
 class FrameLess : public QObject {
     Q_OBJECT
@@ -32,6 +33,7 @@ public:
     Q_DECLARE_FLAGS(Edges, Edge)
 
     FrameLess(QMainWindow *target);
+    FrameLess(QDialog *target);
 
     void setBorderWidth(int w) {
         _borderWidth = w;

@@ -1,10 +1,12 @@
 #include "mainwindow.h"
 #include <QtDebug>
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(ButtonManager *bm, QWidget *parent) :
     QMainWindow(parent)
 {
     setupUi(this);
+    //button manager
+    buttonManager = bm;
 
     updateStack = false;
 
@@ -26,7 +28,6 @@ MainWindow::MainWindow(QWidget *parent) :
         trayMenu->addAction(actionShow_Hide);
         trayMenu->addAction(actionQuit);
         actionSettings->setEnabled(false);
-        actionManage_buttons->setEnabled(false);
         trayIcon->setContextMenu(trayMenu);
         trayIcon->show();
     }
@@ -68,6 +69,9 @@ void MainWindow::mapEvents()
 {
     //clipboard
     connect(clipboard,SIGNAL(dataChanged()),this,SLOT(clipboardChanged()));
+
+    //buttons
+    connect(actionManage_buttons,SIGNAL(triggered()),this,SLOT(manageButtons()));
 
     //tray icon
     connect(trayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(trayIconClicked(QSystemTrayIcon::ActivationReason)));
@@ -122,14 +126,25 @@ void MainWindow::clipboardChanged()
     stack->insertItem(0,item);
 }
 
-void MainWindow::addButton(QString label,QString data)
+void MainWindow::addButton(QString label, QString data, bool inToolbar, bool inTray)
 {
     Button *btn = new Button(this);
     btn->setText(label);
     btn->setData(data);
-    toolBar->insertAction(actionSpacer,btn);
-
-    trayMenu->insertAction(actionClear,btn);
+    if (inToolbar)
+    {
+        toolBar->insertAction(actionSpacer,btn);
+        btn->setInToolBar(true);
+    }
+    if (inTray)
+    {
+        trayMenu->insertAction(actionClear,btn);
+        btn->setInTray(true);
+    }
+    if (inTray || inToolbar)
+    {
+        buttonManager->addButton(btn);
+    }
 
     connect(btn,SIGNAL(pauseUpdateStack(int)),this,SLOT(pauseUpdateStack(int)));
 }
@@ -174,6 +189,11 @@ void MainWindow::on_stack_itemClicked(QListWidgetItem *item)
 {
     pauseUpdateStack();
     clipboard->setText(item->data(Qt::UserRole).toString());
+}
+
+void MainWindow::manageButtons()
+{
+    buttonManager->show();
 }
 
 //EVENT FILTER

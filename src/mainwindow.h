@@ -10,13 +10,15 @@
 #include <QFileInfo>
 #include "button.h"
 #include "rainboxui.h"
+#include "buttonmanager.h"
+#include "frameless.h"
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(ButtonManager *bm, QWidget *parent = 0);
 
 public slots:
     /**
@@ -59,6 +61,11 @@ private slots:
      */
     void on_stack_itemClicked(QListWidgetItem *item);
 
+    /**
+     * @brief Launches the window for button management
+     */
+    void manageButtons();
+
 private:
 
     /**
@@ -76,7 +83,7 @@ private:
      * @param The text label of the button
      * @param The text data stored by the button
      */
-    void addButton(QString label,QString data);
+    void addButton(QString label,QString data, bool inToolbar = true, bool inTray = true);
 
     /**
      * @brief The spacer in the tool bar
@@ -113,6 +120,11 @@ private:
      * @brief trayMenu
      */
     QMenu *trayMenu;
+
+    /**
+     * @brief the button manager
+     */
+    ButtonManager *buttonManager;
 
 protected:
 

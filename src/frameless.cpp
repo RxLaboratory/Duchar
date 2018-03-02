@@ -14,6 +14,20 @@ FrameLess::FrameLess(QMainWindow *target) :
     _rubberband = new QRubberBand(QRubberBand::Rectangle);
 }
 
+FrameLess::FrameLess(QDialog *target) :
+    _target(target),
+    _cursorchanged(false),
+    _leftButtonPressed(false),
+    _borderWidth(10),
+    _dragPos(QPoint())
+{
+    _target->setMouseTracking(true);
+    _target->setWindowFlags(Qt::FramelessWindowHint);
+    _target->setAttribute(Qt::WA_Hover);
+    _target->installEventFilter(this);
+    _rubberband = new QRubberBand(QRubberBand::Rectangle);
+}
+
 bool FrameLess::eventFilter(QObject *o, QEvent*e) {
     if (e->type() == QEvent::MouseMove ||
         e->type() == QEvent::HoverMove ||

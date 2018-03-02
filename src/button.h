@@ -5,6 +5,7 @@
 #include <QAction>
 #include <QGuiApplication>
 #include <QClipboard>
+#include <QMenu>
 
 class Button : public QAction
 {
@@ -16,6 +17,28 @@ public:
      * @param data  The text data to be stored
      */
     void setData(QString data);
+
+    /**
+     * @brief Wether this button is used in the system tray
+     * @return
+     */
+    bool inTray() const;
+    /**
+     * @brief Use this to set to true if you add this button in the tray
+     * @param inTray
+     */
+    void setInTray(bool inTray);
+
+    /**
+     * @brief Wether this button is used in the toolbar
+     * @return
+     */
+    bool inToolBar() const;
+    /**
+     * @brief Use this to set to true if you add this button in the toolbar
+     * @param inToolBar
+     */
+    void setInToolBar(bool inToolBar);
 
 signals:
 
@@ -37,6 +60,8 @@ private:
      * @brief The text data stored by the button
      */
     QString textData;
+    bool _inTray;
+    bool _inToolBar;
 };
 
 #endif // BUTTON_H
