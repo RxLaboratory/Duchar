@@ -17,12 +17,21 @@ VPATH += ./src
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-	button.cpp
+	button.cpp \
+    frameless.cpp \
+    rainboxui.cpp \
+    buttonmanager.cpp
 
 HEADERS  += mainwindow.h \
-    button.h
+    button.h \
+    frameless.h \
+    rainboxui.h \
+    buttonmanager.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    buttonmanager.ui \
+    buttonmanager.ui \
+    src/buttonmanager.ui
 
 RESOURCES += \
     src/resources.qrc
