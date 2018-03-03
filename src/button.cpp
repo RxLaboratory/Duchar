@@ -14,6 +14,11 @@ void Button::setData(QString data)
     textData = data;
 }
 
+QString Button::getData()
+{
+    return textData;
+}
+
 void Button::copyData(bool c)
 {
     QClipboard *clipboard = QGuiApplication::clipboard();

@@ -18,6 +18,8 @@ public:
      */
     void setData(QString data);
 
+    QString getData();
+
     /**
      * @brief Wether this button is used in the system tray
      * @return
