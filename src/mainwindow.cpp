@@ -22,9 +22,6 @@ MainWindow::MainWindow(ButtonManager *bm, QWidget *parent) :
     if (QSystemTrayIcon::isSystemTrayAvailable())
     {
         trayIcon = new QSystemTrayIcon(QIcon(":/icons/app"),this);
-        trayMenu->addAction(actionClear);
-        trayMenu->addAction(actionManage_buttons);
-        trayMenu->addAction(actionSettings);
         trayMenu->addAction(actionShow_Hide);
         trayMenu->addAction(actionQuit);
         trayMenu->setToolTipsVisible(true);
@@ -34,15 +31,9 @@ MainWindow::MainWindow(ButtonManager *bm, QWidget *parent) :
     }
 
     //toolBar
-    toolBar->addAction(actionAdd_to_favorites);
-    toolBar->addAction(actionClear);
-    toolBar->addAction(actionManage_buttons);
-    toolBar->addAction(actionSettings);
-    toolBar->addAction(actionShow_Hide);
-    toolBar->addAction(actionQuit);
     QWidget *spacer = new QWidget(toolBar);
     spacer->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
-    actionSpacer = toolBar->insertWidget(actionClear,spacer);
+    actionSpacer = toolBar->insertWidget(actionSettings,spacer);
 
     //add buttons
     loadButtons();
@@ -60,6 +51,8 @@ MainWindow::MainWindow(ButtonManager *bm, QWidget *parent) :
     mapEvents();
 
     updateStack = true;
+
+    on_actionClipboard_History_triggered(true);
 }
 
 void MainWindow::mapEvents()
@@ -67,15 +60,8 @@ void MainWindow::mapEvents()
     //clipboard
     connect(clipboard,SIGNAL(dataChanged()),this,SLOT(clipboardChanged()));
 
-    //buttons
-    connect(actionManage_buttons,SIGNAL(triggered()),this,SLOT(manageButtons()));
-    connect(actionAdd_to_favorites,SIGNAL(triggered()),this,SLOT(addToFavs()));
-
     //tray icon
     connect(trayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(trayIconClicked(QSystemTrayIcon::ActivationReason)));
-    connect(actionShow_Hide,SIGNAL(triggered()),this,SLOT(showHide()));
-    connect(actionQuit,SIGNAL(triggered()),qApp,SLOT(quit()));
-    connect(actionClear,SIGNAL(triggered()),stack,SLOT(clear()));
 
     //timer
     connect(timer,SIGNAL(timeout()),this,SLOT(resumeUpdateStack()));
@@ -95,6 +81,79 @@ void MainWindow::loadButtons()
         addButton(settings.value("name").toString(),settings.value("data").toString());
     }
     settings.endArray();
+}
+
+void MainWindow::on_actionQuit_triggered()
+{
+    qApp->quit();
+}
+
+void MainWindow::on_actionManage_buttons_triggered(bool checked)
+{
+    actionManage_buttons->setChecked(true);
+    actionClipboard_History->setChecked(false);
+    actionSettings->setChecked(false);
+    stackedWidget->setCurrentIndex(1);
+
+    actionAdd_to_favorites->setVisible(false);
+    actionClear->setVisible(false);
+    actionRemove->setVisible(true);
+
+    buttonManager->show();
+}
+
+void MainWindow::on_actionClipboard_History_triggered(bool checked)
+{
+    actionClipboard_History->setChecked(true);
+    actionManage_buttons->setChecked(false);
+    actionSettings->setChecked(false);
+    stackedWidget->setCurrentIndex(0);
+
+    actionAdd_to_favorites->setVisible(true);
+    actionClear->setVisible(true);
+    actionRemove->setVisible(false);
+}
+
+void MainWindow::on_actionSettings_triggered(bool checked)
+{
+    actionSettings->setChecked(true);
+    actionManage_buttons->setChecked(false);
+    actionClipboard_History->setChecked(false);
+    stackedWidget->setCurrentIndex(2);
+
+    actionAdd_to_favorites->setVisible(false);
+    actionClear->setVisible(false);
+    actionRemove->setVisible(false);
+}
+
+
+void MainWindow::on_actionShow_Hide_triggered()
+{
+    if (this->isVisible())
+    {
+        this->hide();
+        actionShow_Hide->setIcon(QIcon(":/icons/show"));
+        actionShow_Hide->setText("Show application");
+    }
+    else
+    {
+        this->show();
+        actionShow_Hide->setIcon(QIcon(":/icons/hide"));
+        actionShow_Hide->setText("Hide application");
+    }
+}
+
+void MainWindow::on_actionClear_triggered()
+{
+    stack->clear();
+}
+
+void MainWindow::on_actionAdd_to_favorites_triggered()
+{
+    if (stack->selectedItems().length() == 0) return;
+    QListWidgetItem *item = stack->currentItem();
+    QString name = item->text();
+    addButton(name,item->data(Qt::UserRole).toString());
 }
 
 void MainWindow::onButtonMove(int from, int to)
@@ -145,26 +204,15 @@ void MainWindow::clipboardChanged()
     stack->insertItem(0,item);
 }
 
-void MainWindow::addButton(QString label, QString data, bool inToolbar, bool inTray)
+void MainWindow::addButton(QString label, QString data)
 {
     Button *btn = new Button(this);
     btn->setText(label);
     btn->setData(data);
     btn->setToolTip(data);
-    if (inToolbar)
-    {
-        toolBar->insertAction(actionAdd_to_favorites,btn);
-        btn->setInToolBar(true);
-    }
-    if (inTray)
-    {
-        trayMenu->insertAction(actionAdd_to_favorites,btn);
-        btn->setInTray(true);
-    }
-    if (inTray || inToolbar)
-    {
-        buttonManager->addButton(btn);
-    }
+
+    trayMenu->insertAction(actionAdd_to_favorites,btn);
+    buttonManager->addButton(btn);
 
     buttons << btn;
 
@@ -175,23 +223,7 @@ void MainWindow::trayIconClicked(QSystemTrayIcon::ActivationReason reason)
 {
     if (reason == QSystemTrayIcon::Trigger)
     {
-        showHide();
-    }
-}
-
-void MainWindow::showHide()
-{
-    if (this->isVisible())
-    {
-        this->hide();
-        actionShow_Hide->setIcon(QIcon(":/icons/show"));
-        actionShow_Hide->setText("Show application");
-    }
-    else
-    {
-        this->show();
-        actionShow_Hide->setIcon(QIcon(":/icons/hide"));
-        actionShow_Hide->setText("Hide application");
+        on_actionShow_Hide_triggered();
     }
 }
 
@@ -211,19 +243,6 @@ void MainWindow::on_stack_itemClicked(QListWidgetItem *item)
 {
     pauseUpdateStack();
     clipboard->setText(item->data(Qt::UserRole).toString());
-}
-
-void MainWindow::manageButtons()
-{
-    buttonManager->show();
-}
-
-void MainWindow::addToFavs()
-{
-    if (stack->selectedItems().length() == 0) return;
-    QListWidgetItem *item = stack->currentItem();
-    QString name = item->text();
-    addButton(name,item->data(Qt::UserRole).toString());
 }
 
 //EVENT FILTER
@@ -263,3 +282,4 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
       return QObject::eventFilter(obj, event);
   }
 }
+

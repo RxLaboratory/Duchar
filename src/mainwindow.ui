@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>416</width>
-    <height>117</height>
+    <width>351</width>
+    <height>392</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,19 +35,77 @@
      <number>5</number>
     </property>
     <item>
-     <widget class="QListWidget" name="stack">
-      <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
+     <widget class="QStackedWidget" name="stackedWidget">
+      <property name="currentIndex">
+       <number>1</number>
       </property>
-      <property name="editTriggers">
-       <set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
-      </property>
-      <property name="alternatingRowColors">
-       <bool>true</bool>
-      </property>
-      <property name="selectionMode">
-       <enum>QAbstractItemView::SingleSelection</enum>
-      </property>
+      <widget class="QWidget" name="page">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QListWidget" name="stack">
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
+          </property>
+          <property name="alternatingRowColors">
+           <bool>true</bool>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SingleSelection</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="page_2">
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QListWidget" name="buttonList">
+          <property name="dragEnabled">
+           <bool>true</bool>
+          </property>
+          <property name="dragDropMode">
+           <enum>QAbstractItemView::InternalMove</enum>
+          </property>
+          <property name="alternatingRowColors">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -74,6 +132,15 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionClipboard_History"/>
+   <addaction name="actionManage_buttons"/>
+   <addaction name="separator"/>
+   <addaction name="actionClear"/>
+   <addaction name="actionAdd_to_favorites"/>
+   <addaction name="actionRemove"/>
+   <addaction name="actionSettings"/>
+   <addaction name="actionShow_Hide"/>
+   <addaction name="actionQuit"/>
   </widget>
   <action name="actionQuit">
    <property name="icon">
@@ -88,6 +155,9 @@
    </property>
   </action>
   <action name="actionSettings">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="resources.qrc">
      <normaloff>:/icons/settings</normaloff>:/icons/settings</iconset>
@@ -97,15 +167,19 @@
    </property>
   </action>
   <action name="actionManage_buttons">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/icons/fav</normaloff>:/icons/fav</iconset>
+     <normaloff>:/icons/fav</normaloff>
+     <normalon>:/icons/fav_l</normalon>:/icons/fav</iconset>
    </property>
    <property name="text">
     <string>Manage favorites...</string>
    </property>
    <property name="toolTip">
-    <string>Manage favorites</string>
+    <string>Favorites</string>
    </property>
   </action>
   <action name="actionShow_Hide">
@@ -142,6 +216,31 @@
    </property>
    <property name="toolTip">
     <string>Add to favorites</string>
+   </property>
+  </action>
+  <action name="actionClipboard_History">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/clipboard</normaloff>
+     <normalon>:/icons/clipboard_l</normalon>:/icons/clipboard</iconset>
+   </property>
+   <property name="text">
+    <string>Clipboard History</string>
+   </property>
+   <property name="toolTip">
+    <string>Clipboard History</string>
+   </property>
+  </action>
+  <action name="actionRemove">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/minus</normaloff>:/icons/minus</iconset>
+   </property>
+   <property name="text">
+    <string>Remove</string>
    </property>
   </action>
  </widget>

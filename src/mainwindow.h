@@ -45,11 +45,6 @@ private slots:
     void trayIconClicked(QSystemTrayIcon::ActivationReason reason);
 
     /**
-     * @brief Show or hides the application
-     */
-    void showHide();
-
-    /**
      * @brief Called each time the data stored in the system clipboard has changed
      * adds a new line in the stack (if data type is text)
      */
@@ -62,15 +57,6 @@ private slots:
     void on_stack_itemClicked(QListWidgetItem *item);
 
     /**
-     * @brief Launches the window for button management
-     */
-    void manageButtons();
-
-    /**
-     * @brief Adds the selected item to favorites
-     */
-    void addToFavs();
-    /**
      * @brief (re)Loads favorite buttons
      */
     void loadButtons();
@@ -80,6 +66,16 @@ private slots:
      * @param to
      */
     void onButtonMove(int from,int to);
+
+    void on_actionQuit_triggered();
+    void on_actionManage_buttons_triggered(bool checked);
+    void on_actionShow_Hide_triggered();
+    void on_actionClear_triggered();
+    void on_actionAdd_to_favorites_triggered();
+
+    void on_actionClipboard_History_triggered(bool checked);
+
+    void on_actionSettings_triggered(bool checked);
 
 private:
 
@@ -98,7 +94,7 @@ private:
      * @param The text label of the button
      * @param The text data stored by the button
      */
-    void addButton(QString label,QString data, bool inToolbar = true, bool inTray = true);
+    void addButton(QString label, QString data);
 
     /**
      * @brief The spacer in the tool bar
