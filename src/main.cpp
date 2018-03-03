@@ -6,6 +6,12 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    QCoreApplication::setOrganizationName("Duduf");
+    QCoreApplication::setOrganizationDomain("duduf.com");
+    QCoreApplication::setApplicationName("DuChar");
+    QCoreApplication::setApplicationVersion(APPVERSION);
+
     ButtonManager *buttonManager = new ButtonManager();
     FrameLess ff(buttonManager);
     MainWindow *w = new MainWindow(buttonManager);
