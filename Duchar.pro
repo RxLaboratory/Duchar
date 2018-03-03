@@ -4,6 +4,8 @@
 #
 #-------------------------------------------------
 
+DEFINES += APPVERSION=\\\"1.0.0-Beta\\\"
+
 QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -35,3 +37,5 @@ FORMS    += mainwindow.ui \
 
 RESOURCES += \
     src/resources.qrc
+
+DISTFILES +=
