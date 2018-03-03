@@ -4,7 +4,7 @@ FrameLess::FrameLess(QMainWindow *target) :
     _target(target),
     _cursorchanged(false),
     _leftButtonPressed(false),
-    _borderWidth(10),
+    _borderWidth(5),
     _dragPos(QPoint())
 {
     _target->setMouseTracking(true);
@@ -18,7 +18,7 @@ FrameLess::FrameLess(QDialog *target) :
     _target(target),
     _cursorchanged(false),
     _leftButtonPressed(false),
-    _borderWidth(10),
+    _borderWidth(5),
     _dragPos(QPoint())
 {
     _target->setMouseTracking(true);
