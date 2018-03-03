@@ -1,4 +1,5 @@
 #include "buttonmanager.h"
+#include <QtDebug>
 
 ButtonManager::ButtonManager(QWidget *parent) :
     QMainWindow(parent)
@@ -30,12 +31,21 @@ void ButtonManager::mapEvents()
 {
     connect(actionRemove,SIGNAL(triggered()),this,SLOT(removeButton()));
     connect(actionQuit,SIGNAL(triggered()),this,SLOT(hide()));
+
+    //connect the edit of the items
+    connect(buttonList->itemDelegate(), &QAbstractItemDelegate::commitData, this, &ButtonManager::onItemEdited);
+    //connect rows moved
+    connect(buttonList->model(), SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)), this, SLOT(onRowsMoved(QModelIndex,int,int,QModelIndex,int)));
 }
 
 void ButtonManager::addButton(Button *b)
 {
-    buttonList->addItem(b->text());
+    QListWidgetItem *item = new QListWidgetItem(b->text());
+    item->setFlags(item->flags() | Qt::ItemIsEditable);
+    buttonList->addItem(item);
     buttons.append(b);
+
+    updateSettings();
 }
 
 void ButtonManager::removeButton()
@@ -52,8 +62,20 @@ void ButtonManager::removeButton()
             break;
         }
     }
+    updateSettings();
 }
 
+void ButtonManager::updateSettings()
+{
+    settings.beginWriteArray("buttons");
+    for(int i = 0; i < buttons.length(); i++)
+    {
+        settings.setArrayIndex(i);
+        settings.setValue("name", buttons[i]->text());
+        settings.setValue("data", buttons[i]->getData());
+    }
+    settings.endArray();
+}
 
 //EVENT FILTER
 
@@ -91,4 +113,20 @@ bool ButtonManager::eventFilter(QObject *obj, QEvent *event)
       // standard event processing
       return QObject::eventFilter(obj, event);
   }
+}
+
+void ButtonManager::onItemEdited(QWidget* pLineEdit)
+{
+    QString currentText = reinterpret_cast<QLineEdit*>(pLineEdit)->text();
+    int ind = buttonList->currentRow();
+    buttons[ind]->setText(currentText);
+    updateSettings();
+}
+
+void ButtonManager::onRowsMoved(const QModelIndex sourceParent, int sourceStart, int sourceEnd, const QModelIndex &destinationParent, int destinationRow)
+{
+    Button *btn = buttons.takeAt(sourceStart);
+    buttons.insert(destinationRow,btn);
+    updateSettings();
+    emit buttonMoved(sourceStart,destinationRow);
 }

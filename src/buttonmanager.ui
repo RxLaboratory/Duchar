@@ -6,16 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>254</width>
-    <height>216</height>
+    <width>299</width>
+    <height>307</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Duchar Button Manager</string>
+   <string>Duchar Favorites</string>
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">
-    <normaloff>:/icons/add</normaloff>:/icons/add</iconset>
+    <normaloff>:/icons/fav</normaloff>:/icons/fav</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -32,16 +32,23 @@
      <number>3</number>
     </property>
     <item>
-     <widget class="QListWidget" name="buttonList"/>
+     <widget class="QListWidget" name="buttonList">
+      <property name="dragEnabled">
+       <bool>true</bool>
+      </property>
+      <property name="dragDropMode">
+       <enum>QAbstractItemView::InternalMove</enum>
+      </property>
+      <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
     <string>toolBar</string>
-   </property>
-   <property name="movable">
-    <bool>false</bool>
    </property>
    <property name="iconSize">
     <size>
@@ -68,17 +75,11 @@
     <string>Close</string>
    </property>
   </action>
-  <action name="actionUp">
-   <property name="text">
-    <string>Up</string>
-   </property>
-  </action>
-  <action name="actionDown">
-   <property name="text">
-    <string>Down</string>
-   </property>
-  </action>
   <action name="actionRemove">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/minus</normaloff>:/icons/minus</iconset>
+   </property>
    <property name="text">
     <string>Remove</string>
    </property>

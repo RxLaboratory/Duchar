@@ -3,6 +3,8 @@
 
 #include "ui_buttonmanager.h"
 #include <QMouseEvent>
+#include <QSettings>
+#include <QLineEdit>
 #include "button.h"
 
 class ButtonManager : public QMainWindow, private Ui::ButtonManager
@@ -14,10 +16,22 @@ public:
     explicit ButtonManager(QWidget *parent = 0);
     void addButton(Button *b);
 
+signals:
+    void buttonMoved(int from,int to);
+
 private slots:
     void removeButton();
 
+    void onItemEdited(QWidget* pLineEdit);
+    void onRowsMoved(const QModelIndex sourceParent, int sourceStart, int sourceEnd, const QModelIndex & destinationParent, int destinationRow);
+
 private:
+
+    /**
+     * @brief Updates the list of buttons stored in the settings
+     */
+    void updateSettings();
+
     /**
      * @brief Used to drag window, true is the mover is currently clicked
      */
@@ -30,6 +44,7 @@ private:
     QPoint dragPosition;
 
     QList<Button *> buttons;
+    QSettings settings;
 
 protected:
 
