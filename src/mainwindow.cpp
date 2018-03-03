@@ -27,12 +27,14 @@ MainWindow::MainWindow(ButtonManager *bm, QWidget *parent) :
         trayMenu->addAction(actionSettings);
         trayMenu->addAction(actionShow_Hide);
         trayMenu->addAction(actionQuit);
+        trayMenu->setToolTipsVisible(true);
         actionSettings->setEnabled(false);
         trayIcon->setContextMenu(trayMenu);
         trayIcon->show();
     }
 
     //toolBar
+    toolBar->addAction(actionAdd_to_favorites);
     toolBar->addAction(actionClear);
     toolBar->addAction(actionManage_buttons);
     toolBar->addAction(actionSettings);
@@ -43,12 +45,7 @@ MainWindow::MainWindow(ButtonManager *bm, QWidget *parent) :
     actionSpacer = toolBar->insertWidget(actionClear,spacer);
 
     //add buttons
-    addButton("É","É");
-    addButton("È","È");
-    addButton("Ù","Ù");
-    addButton("À","À");
-    addButton("Ç","Ç");
-    addButton("•","•");
+    loadButtons();
 
     //drag window
     toolBar->installEventFilter(this);
@@ -72,6 +69,7 @@ void MainWindow::mapEvents()
 
     //buttons
     connect(actionManage_buttons,SIGNAL(triggered()),this,SLOT(manageButtons()));
+    connect(actionAdd_to_favorites,SIGNAL(triggered()),this,SLOT(addToFavs()));
 
     //tray icon
     connect(trayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(trayIconClicked(QSystemTrayIcon::ActivationReason)));
@@ -81,6 +79,27 @@ void MainWindow::mapEvents()
 
     //timer
     connect(timer,SIGNAL(timeout()),this,SLOT(resumeUpdateStack()));
+
+    //buttonManager
+    connect(buttonManager,SIGNAL(buttonMoved(int,int)),this,SLOT(onButtonMove(int,int)));
+
+}
+
+void MainWindow::loadButtons()
+{
+    QSettings settings;
+    int size = settings.beginReadArray("buttons");
+    for(int i = 0; i < size; i++)
+    {
+        settings.setArrayIndex(i);
+        addButton(settings.value("name").toString(),settings.value("data").toString());
+    }
+    settings.endArray();
+}
+
+void MainWindow::onButtonMove(int from, int to)
+{
+    //TODO
 }
 
 void MainWindow::updateCSS(QString cssFileName)
@@ -116,13 +135,13 @@ void MainWindow::clipboardChanged()
 
     if (clipboardText.length() > 33)
     {
-        qDebug() << "raccourci";
         clipboardText = clipboardText.left(30) + "...";
     }
 
     QListWidgetItem *item = new QListWidgetItem(clipboardText);
     item->setData(Qt::UserRole,clipboard->text());
     item->setToolTip(clipboard->text());
+    item->setFlags (item->flags () | Qt::ItemIsEditable);
     stack->insertItem(0,item);
 }
 
@@ -131,20 +150,23 @@ void MainWindow::addButton(QString label, QString data, bool inToolbar, bool inT
     Button *btn = new Button(this);
     btn->setText(label);
     btn->setData(data);
+    btn->setToolTip(data);
     if (inToolbar)
     {
-        toolBar->insertAction(actionSpacer,btn);
+        toolBar->insertAction(actionAdd_to_favorites,btn);
         btn->setInToolBar(true);
     }
     if (inTray)
     {
-        trayMenu->insertAction(actionClear,btn);
+        trayMenu->insertAction(actionAdd_to_favorites,btn);
         btn->setInTray(true);
     }
     if (inTray || inToolbar)
     {
         buttonManager->addButton(btn);
     }
+
+    buttons << btn;
 
     connect(btn,SIGNAL(pauseUpdateStack(int)),this,SLOT(pauseUpdateStack(int)));
 }
@@ -194,6 +216,14 @@ void MainWindow::on_stack_itemClicked(QListWidgetItem *item)
 void MainWindow::manageButtons()
 {
     buttonManager->show();
+}
+
+void MainWindow::addToFavs()
+{
+    if (stack->selectedItems().length() == 0) return;
+    QListWidgetItem *item = stack->currentItem();
+    QString name = item->text();
+    addButton(name,item->data(Qt::UserRole).toString());
 }
 
 //EVENT FILTER

@@ -66,6 +66,21 @@ private slots:
      */
     void manageButtons();
 
+    /**
+     * @brief Adds the selected item to favorites
+     */
+    void addToFavs();
+    /**
+     * @brief (re)Loads favorite buttons
+     */
+    void loadButtons();
+    /**
+     * @brief Moves a button from one position to another
+     * @param from
+     * @param to
+     */
+    void onButtonMove(int from,int to);
+
 private:
 
     /**
@@ -125,6 +140,11 @@ private:
      * @brief the button manager
      */
     ButtonManager *buttonManager;
+
+    /**
+     * @brief A list of the favorites
+     */
+    QList<Button*> buttons;
 
 protected:
 

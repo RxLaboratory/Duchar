@@ -10,5 +10,10 @@
         <file alias="icons/show">../resources/icons/eye.png</file>
         <file alias="icons/trash">../resources/icons/trash2-91.png</file>
         <file alias="styles/default-values">../resources/styles/style-values.rui</file>
+        <file alias="styles/default-duchar">../resources/styles/style-duchar.css</file>
+        <file alias="icons/fav">../resources/icons/fav_p.png</file>
+        <file alias="icons/down">../resources/icons/w25_down_p_1.png</file>
+        <file alias="icons/minus">../resources/icons/w25_minus_p.png</file>
+        <file alias="icons/up">../resources/icons/w25_up_p_1.png</file>
     </qresource>
 </RCC>
