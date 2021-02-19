@@ -1,22 +1,19 @@
 <RCC>
     <qresource prefix="/">
-        <file alias="styles/default">../resources/styles/style.css</file>
-	<file alias="icons/add">../resources/icons/w25_plus_l.png</file>
-        <file alias="icons/app">../resources/icons/alpha.png</file>
-        <file alias="icons/close">../resources/icons/close2.png</file>
-        <file alias="icons/settings">../resources/icons/cogs2.png</file>
-        <file alias="icons/move">../resources/icons/move-93.png</file>
-        <file alias="icons/hide">../resources/icons/eye slash.png</file>
-        <file alias="icons/show">../resources/icons/eye.png</file>
-	<file alias="icons/trash">../resources/icons/w25_trash_l.png</file>
-        <file alias="styles/default-values">../resources/styles/style-values.rui</file>
-        <file alias="styles/default-duchar">../resources/styles/style-duchar.css</file>
-        <file alias="icons/fav">../resources/icons/fav_p.png</file>
-	<file alias="icons/fav_l">../resources/icons/w25_fav_l.png</file>
-        <file alias="icons/down">../resources/icons/w25_down_p_1.png</file>
-	<file alias="icons/minus">../resources/icons/w25_minus_l.png</file>
-        <file alias="icons/up">../resources/icons/w25_up_p_1.png</file>
-	<file alias="icons/clipboard">../resources/icons/w25_clipboard_p.png</file>
-	<file alias="icons/clipboard_l">../resources/icons/w25_clipboard_l.png</file>
+        <file alias="icons/add">resources/icons/w25_plus_l.png</file>
+        <file alias="icons/close">resources/icons/close2.png</file>
+        <file alias="icons/move">resources/icons/move-93.png</file>
+        <file alias="icons/hide">resources/icons/eye slash.png</file>
+        <file alias="icons/show">resources/icons/eye.png</file>
+        <file alias="icons/trash">resources/icons/w25_trash_l.png</file>
+        <file alias="icons/fav">resources/icons/fav_p.png</file>
+        <file alias="icons/fav_l">resources/icons/w25_fav_l.png</file>
+        <file alias="icons/down">resources/icons/w25_down_p_1.png</file>
+        <file alias="icons/minus">resources/icons/w25_minus_l.png</file>
+        <file alias="icons/up">resources/icons/w25_up_p_1.png</file>
+        <file alias="icons/clipboard">resources/icons/w25_clipboard_p.png</file>
+        <file alias="icons/clipboard_l">resources/icons/w25_clipboard_l.png</file>
+        <file alias="icons/tray">resources/icons/duchar-tray-ico.svg</file>
+        <file alias="icons/app">resources/icons/duchar-icon-medium.svg</file>
     </qresource>
 </RCC>

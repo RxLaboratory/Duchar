@@ -3,15 +3,27 @@
 
 #include "ui_mainwindow.h"
 #include <QFile>
-#include <QMouseEvent>
 #include <QSystemTrayIcon>
-#include <QMenu>
 #include <QTimer>
 #include <QFileInfo>
+#include <QStyleFactory>
+#include <QMouseEvent>
+#include <QLabel>
+#include <QToolButton>
+#include <QMenu>
+#include <QDesktopServices>
+#include <QtDebug>
+#include <QSettings>
+#include <QProcess>
+#include <QMessageBox>
+
 #include "button.h"
 #include "rainboxui.h"
 #include "buttonmanager.h"
-#include "frameless.h"
+#include "duqf-app/app-style.h"
+#include "duqf-widgets/settingswidget.h"
+#include "duqf-widgets/aboutdialog.h"
+#include "duqf-widgets/toolbarspacer.h"
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
@@ -33,11 +45,17 @@ public slots:
     void resumeUpdateStack();
 
 private slots:
-    /**
-     * @brief updates the style of the application
-     * @param cssFileName   The path to a css file to load
-     */
-    void updateCSS(QString cssFileName);
+    //void duqf_maximize(bool max);
+    //void duqf_maximize();
+    void duqf_bugReport();
+    void duqf_forum();
+    void duqf_chat();
+    void duqf_doc();
+    void duqf_settings(bool checked = true);
+    void duqf_closeSettings();
+    void duqf_reinitSettings();
+    void duqf_about();
+
     /**
      * @brief Handles events from tray icon
      * @param reason    The reason why the icon was activated
@@ -72,17 +90,38 @@ private slots:
     void on_actionShow_Hide_triggered();
     void on_actionClear_triggered();
     void on_actionAdd_to_favorites_triggered();
-
     void on_actionClipboard_History_triggered(bool checked);
 
-    void on_actionSettings_triggered(bool checked);
-
 private:
-
     /**
      * @brief Connects all signals/slots during app init
      */
     void mapEvents();
+    // ========= RxOT UI ==============
+    /**
+     * @brief initUi Called once to build the default RxOT UI
+     */
+    void duqf_initUi();
+    /**
+     * @brief duqf_setStyle Called once to set the UI Style after all ui have been created
+     */
+    void duqf_setStyle();
+    /**
+     * @brief Is the tool bar currently clicked or not
+     */
+    bool duqf_toolBarClicked;
+    /**
+     * @brief Drag position
+     * Used for drag n drop feature
+     */
+    QPoint duqf_dragPosition;
+    //QToolButton *duqf_maximizeButton;
+    QToolButton *duqf_settingsButton;
+    AboutDialog *duqf_aboutDialog;
+    QSettings settings;
+    SettingsWidget *settingsWidget;
+    QLabel *title;
+    QMenu *helpMenu;
 
     /**
      * @brief The system clipboard
@@ -95,22 +134,6 @@ private:
      * @param The text data stored by the button
      */
     void addButton(QString label, QString data);
-
-    /**
-     * @brief The spacer in the tool bar
-     */
-    QAction *actionSpacer;
-
-    /**
-     * @brief Used to drag window, true is the mover is currently clicked
-     */
-    bool moverClicked;
-
-    /**
-     * @brief Drag position
-     * Used for dragging window
-     */
-    QPoint dragPosition;
 
     /**
      * @brief Icon in the system tray
@@ -143,9 +166,9 @@ private:
     QList<Button*> buttons;
 
 protected:
-
     // Reimplemented methods
     bool eventFilter(QObject *obj, QEvent *event);
+    void closeEvent(QCloseEvent *event);
 };
 
 #endif // MAINWINDOW_H

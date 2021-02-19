@@ -1,10 +1,10 @@
-#include "frameless.h"
+#include "duqf-app/app-style.h"
 
-FrameLess::FrameLess(QMainWindow *target) :
+FrameLessWindow::FrameLessWindow(QMainWindow *target) :
     _target(target),
     _cursorchanged(false),
     _leftButtonPressed(false),
-    _borderWidth(5),
+    _borderWidth(10),
     _dragPos(QPoint())
 {
     _target->setMouseTracking(true);
@@ -14,66 +14,48 @@ FrameLess::FrameLess(QMainWindow *target) :
     _rubberband = new QRubberBand(QRubberBand::Rectangle);
 }
 
-FrameLess::FrameLess(QDialog *target) :
-    _target(target),
-    _cursorchanged(false),
-    _leftButtonPressed(false),
-    _borderWidth(5),
-    _dragPos(QPoint())
-{
-    _target->setMouseTracking(true);
-    _target->setWindowFlags(Qt::FramelessWindowHint);
-    _target->setAttribute(Qt::WA_Hover);
-    _target->installEventFilter(this);
-    _rubberband = new QRubberBand(QRubberBand::Rectangle);
-}
-
-bool FrameLess::eventFilter(QObject *o, QEvent*e) {
-    if (e->type() == QEvent::MouseMove ||
-        e->type() == QEvent::HoverMove ||
-        e->type() == QEvent::Leave ||
-        e->type() == QEvent::MouseButtonPress ||
-        e->type() == QEvent::MouseButtonRelease) {
-
-        switch (e->type()) {
-        case QEvent::MouseMove:
-            mouseMove(static_cast<QMouseEvent*>(e));
-            return true;
-            break;
-        case QEvent::HoverMove:
-            mouseHover(static_cast<QHoverEvent*>(e));
-            return true;
-            break;
-        case QEvent::Leave:
-            mouseLeave(e);
-            return true;
-            break;
-        case QEvent::MouseButtonPress:
-            mousePress(static_cast<QMouseEvent*>(e));
-            return true;
-            break;
-        case QEvent::MouseButtonRelease:
-            mouseRealese(static_cast<QMouseEvent*>(e));
-            return true;
-            break;
-        }
+bool FrameLessWindow::eventFilter(QObject *o, QEvent*e) {
+    if (e->type() == QEvent::MouseMove)
+    {
+        mouseMove(static_cast<QMouseEvent*>(e));
+        return true;
+    }
+    else if (e->type() == QEvent::HoverMove)
+    {
+        mouseHover(static_cast<QHoverEvent*>(e));
+        return true;
+    }
+    else if (e->type() == QEvent::Leave)
+    {
+        mouseLeave();
+        return true;
+    }
+    else if (e->type() == QEvent::MouseButtonPress)
+    {
+        mousePress(static_cast<QMouseEvent*>(e));
+        return true;
+    }
+    else if (e->type() == QEvent::MouseButtonRelease)
+    {
+        mouseRealese(static_cast<QMouseEvent*>(e));
+        return true;
     }
     else {
         return _target->eventFilter(o, e);
     }
 }
 
-void FrameLess::mouseHover(QHoverEvent *e) {
+void FrameLessWindow::mouseHover(QHoverEvent *e) {
     updateCursorShape(_target->mapToGlobal(e->pos()));
 }
 
-void FrameLess::mouseLeave(QEvent *e) {
+void FrameLessWindow::mouseLeave() {
     if (!_leftButtonPressed) {
         _target->unsetCursor();
     }
 }
 
-void FrameLess::mousePress(QMouseEvent *e) {
+void FrameLessWindow::mousePress(QMouseEvent *e) {
     if (e->button() & Qt::LeftButton) {
         _leftButtonPressed = true;
         calculateCursorPosition(e->globalPos(), _target->frameGeometry(), _mousePress);
@@ -87,17 +69,18 @@ void FrameLess::mousePress(QMouseEvent *e) {
     }
 }
 
-void FrameLess::mouseRealese(QMouseEvent *e) {
+void FrameLessWindow::mouseRealese(QMouseEvent *e) {
     if (e->button() & Qt::LeftButton) {
         _leftButtonPressed = false;
         _dragStart = false;
     }
 }
 
-void FrameLess::mouseMove(QMouseEvent *e) {
+void FrameLessWindow::mouseMove(QMouseEvent *e) {
     if (_leftButtonPressed) {
         if (_dragStart) {
-            _target->move(_target->frameGeometry().topLeft() + (e->pos() - _dragPos));
+            _target->setCursor(Qt::SizeAllCursor);
+            _target->move(e->globalPos() - _dragPos);
         }
 
         if (!_mousePress.testFlag(Edge::None)) {
@@ -151,7 +134,7 @@ void FrameLess::mouseMove(QMouseEvent *e) {
     }
 }
 
-void FrameLess::updateCursorShape(const QPoint &pos) {
+void FrameLessWindow::updateCursorShape(const QPoint &pos) {
     if (_target->isFullScreen() || _target->isMaximized()) {
         if (_cursorchanged) {
             _target->unsetCursor();
@@ -180,7 +163,7 @@ void FrameLess::updateCursorShape(const QPoint &pos) {
     }
 }
 
-void FrameLess::calculateCursorPosition(const QPoint &pos, const QRect &framerect, Edges &_edge) {
+void FrameLessWindow::calculateCursorPosition(const QPoint &pos, const QRect &framerect, Edges &_edge) {
     bool onLeft = pos.x() >= framerect.x() - _borderWidth && pos.x() <= framerect.x() + _borderWidth &&
         pos.y() <= framerect.y() + framerect.height() - _borderWidth && pos.y() >= framerect.y() + _borderWidth;
 
