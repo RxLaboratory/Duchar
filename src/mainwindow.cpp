@@ -15,7 +15,7 @@ MainWindow::MainWindow(ButtonManager *bm, QWidget *parent) :
     updateStack = false;
 
     //appearance
-    //this->setWindowFlags(this->windowFlags() | Qt::WindowStaysOnTopHint | Qt::SubWindow);//subwindow removes the task bar item
+    this->setWindowFlags(this->windowFlags() | Qt::WindowStaysOnTopHint | Qt::SubWindow);//subwindow removes the task bar item
 
     //system tray
     trayMenu = new QMenu("Duchar",this);
